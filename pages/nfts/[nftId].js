@@ -49,13 +49,13 @@ const Nft = () => {
   }, [nfts]);
 
   const marketplace = useMarketplace(
-    "0xE073aAbD1E166Aa23d9562b9D4aB62b57Da9dE9e"
+    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
   );
 
   useEffect(() => {
     if (!marketplace) return;
     (async () => {
-      setListings(await marketplace.getAllListings());
+      setListings(await marketplace.getActiveListings());
     })();
   }, [marketplace]);
 

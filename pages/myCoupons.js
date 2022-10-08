@@ -3,6 +3,7 @@ import {
   useMarketplace,
   useNFTs,
   useAddress,
+  useOwnedNFTs,
 } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -20,13 +21,11 @@ const myCoupons = () => {
   const { contract } = useContract(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
-  const { data: nfts, isLoading: isReadingNfts } = useNFTs(contract);
-  var nftList = [];
-  useEffect(() => {}, [nfts]);
+  const { data: ownedNFTs, isLoading, error } = useOwnedNFTs(contract, address);
 
-  // console.log(nfts);
+  console.log(ownedNFTs);
   const marketplace = useMarketplace(
-    "0xE073aAbD1E166Aa23d9562b9D4aB62b57Da9dE9e"
+    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
   );
   useEffect(() => {
     if (!marketplace) return;
@@ -57,7 +56,7 @@ const myCoupons = () => {
   useEffect(() => {
     fetchCollectionData();
   }, [collectionId]);
-  if (isReadingNfts)
+  if (isLoading)
     return (
       <>
         <Header />
@@ -68,19 +67,21 @@ const myCoupons = () => {
     <div className='overflow-hidden'>
       <Header />
       <div className='flex flex-wrap '>
-        {nfts.map((nftItem) => (
+        {ownedNFTs.length == 0 ? (
+          <div className='h-screen w-screen text-white justify-center flex items-center'>
+            No NFTs Present
+          </div>
+        ) : (
           <>
-            {console.log(nftItem.owner == address)}
-            {
-              nftItem.owner == address && (
-                <NFTCard
-                  key={nftItem.metadata.id / 1e18}
-                  nftItem={nftItem.metadata}
-                  title={collection?.title}
-                  listings={listings}
-                  isLoading={isReadingNfts}
-                />
-              )
+            {ownedNFTs.map((nftItem) => (
+              <NFTCard
+                key={nftItem.metadata.id / 1e18}
+                nftItem={nftItem.metadata}
+                title={collection?.title}
+                listings={listings}
+                isLoading={isLoading}
+              />
+
               // <NFTCard
               //   key={nftItem.id}
               //   nftItem={nftItem.asset}
@@ -88,9 +89,9 @@ const myCoupons = () => {
               //   listings={listings}
               //   isLoading={isReadingNfts}
               // />
-            }
+            ))}
           </>
-        ))}
+        )}
       </div>
     </div>
   );

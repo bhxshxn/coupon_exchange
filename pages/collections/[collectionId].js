@@ -1,4 +1,9 @@
-import { useContract, useMarketplace, useNFTs } from "@thirdweb-dev/react";
+import {
+  useContract,
+  useMarketplace,
+  useNFTs,
+  useActiveListings,
+} from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineInstagram, AiOutlineTwitter } from "react-icons/ai";
@@ -43,35 +48,19 @@ const Collection = () => {
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
   const { data: nfts, isLoading: isReadingNfts } = useNFTs(contract);
-  // console.log(nfts);
   const marketplace = useMarketplace(
-    "0xE073aAbD1E166Aa23d9562b9D4aB62b57Da9dE9e"
+    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
   );
-  // const nftModule = useMemo(() => {
-  //   if (!provider) return;
+  const { contract: marketplaceContract } = useContract(
+    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
+  );
+  const {
+    data: marketplacelistings,
+    isLoading,
+    error,
+  } = useActiveListings(marketplaceContract);
+  console.log(isLoading);
 
-  //   const sdk = new ThirdwebSDK(provider.getSigner());
-  //   return sdk.getNFTModule(collectionId);
-  // }, [provider]);
-
-  // useEffect(() => {
-  //   if (!nftModule) return;
-  //   (async () => {
-  //     const nfts = await nftModule.getAll();
-
-  //     setNfts(nfts);
-  //   })();
-  // }, [nftModule]);
-
-  // const marketPlaceModule = useMemo(() => {
-  //   if (!provider) return;
-
-  //   const sdk = new ThirdwebSDK(provider.getSigner());
-  //   return sdk.getMarketplaceModule(
-  //     "0xE073aAbD1E166Aa23d9562b9D4aB62b57Da9dE9e"
-  //   );
-  // }, [provider]);
-  // get all listings in the collection
   useEffect(() => {
     if (!marketplace) return;
     (async () => {
@@ -101,7 +90,7 @@ const Collection = () => {
   useEffect(() => {
     fetchCollectionData();
   }, [collectionId]);
-  if (listings.length == 0)
+  if (isLoading)
     return (
       <>
         <Header />
@@ -207,26 +196,34 @@ const Collection = () => {
         </div>
       </div>
       <div className='flex flex-wrap '>
-        {listings.length == 0 ? (
+        {isLoading ? (
           <LoadingComponent />
         ) : (
           <>
-            {listings.map((nftItem) => (
-              // <NFTCard
-              //   key={nftItem.metadata.id / 1e18}
-              //   nftItem={nftItem.metadata}
-              //   title={collection?.title}
-              //   listings={listings}
-              //   isLoading={isReadingNfts}
-              // />
-              <NFTCard
-                key={nftItem.id}
-                nftItem={nftItem.asset}
-                title={collection?.title}
-                listings={listings}
-                isLoading={isReadingNfts}
-              />
-            ))}
+            {marketplacelistings.length == 0 ? (
+              <div className='h-full w-screen text-white justify-center flex items-center'>
+                No NFTs Present
+              </div>
+            ) : (
+              <>
+                {marketplacelistings.map((nftItem) => (
+                  // <NFTCard
+                  //   key={nftItem.metadata.id / 1e18}
+                  //   nftItem={nftItem.metadata}
+                  //   title={collection?.title}
+                  //   listings={listings}
+                  //   isLoading={isReadingNfts}
+                  // />
+                  <NFTCard
+                    key={nftItem.id}
+                    nftItem={nftItem.asset}
+                    title={collection?.title}
+                    listings={listings}
+                    isLoading={isReadingNfts}
+                  />
+                ))}
+              </>
+            )}
           </>
         )}
       </div>

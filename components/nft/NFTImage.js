@@ -8,7 +8,6 @@ const style = {
 };
 
 const NFTImage = ({ selectedNft }) => {
-  console.log(selectedNft?.metadata.image);
   return (
     <div>
       <div className={style.topBar}>
