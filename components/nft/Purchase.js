@@ -112,7 +112,12 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
   const nftCollection = useNFTCollection(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
-  const { mutate: burnNftNew, isLoading, error } = useBurnNFT(contract);
+  const {
+    mutate: burnNftNew,
+    isSuccess,
+    isLoading,
+    error,
+  } = useBurnNFT(contract);
   const cancelListing = async (id) => {
     try {
       setLoading(true);
@@ -123,13 +128,14 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       errorCancelListing();
     }
   };
+  useEffect(() => {
+    if (isSuccess) confirmBurnNft();
+  }, [isSuccess]);
+
   const burnNft = async (id) => {
     try {
-      // setLoading(true);
-      // console.log(id);
+      setLoading(true);
       burnNftNew({ tokenId: id });
-      // await nftCollection.burnToken(id);
-      confirmBurnNft();
     } catch (err) {
       console.error(err);
       errorBurnNft();

@@ -2,7 +2,7 @@ import React from "react";
 
 const LoadingFullScreen = () => {
   return (
-    <div class='h-screen w-screen flex justify-center items-center'>
+    <div class='h-[80vh] w-screen flex justify-center items-center'>
       <div role='status'>
         <svg
           aria-hidden='true'
