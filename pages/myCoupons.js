@@ -15,24 +15,32 @@ import { client } from "../lib/sanityClient";
 const myCoupons = () => {
   const router = useRouter();
   const address = useAddress();
+
   const { collectionId } = router.query;
   const [collection, setCollection] = useState({});
   const [listings, setListings] = useState([]);
+
   const { contract } = useContract(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
   const { data: ownedNFTs, isLoading, error } = useOwnedNFTs(contract, address);
 
-  console.log(ownedNFTs);
+  console.log('ownedNFTs', ownedNFTs, error);
+
+
   const marketplace = useMarketplace(
     "0x606879c4a436594Bf66113993B8B65C19675a0C7"
   );
+
+
   useEffect(() => {
     if (!marketplace) return;
     (async () => {
       setListings(await marketplace.getActiveListings());
     })();
   }, [marketplace]);
+
+
 
   const fetchCollectionData = async (sanityClient = client) => {
     const query = `*[_type == "marketItems" && contractAddress == "${collectionId}" ] {
@@ -67,13 +75,13 @@ const myCoupons = () => {
     <div className='overflow-hidden'>
       <Header />
       <div className='flex flex-wrap '>
-        {ownedNFTs.length == 0 ? (
+        {ownedNFTs?.length == 0 ? (
           <div className='h-screen w-screen text-white justify-center flex items-center'>
             No NFTs Present
           </div>
         ) : (
           <>
-            {ownedNFTs.map((nftItem) => (
+            {ownedNFTs?.map((nftItem) => (
               <NFTCard
                 key={nftItem.metadata.id / 1e18}
                 nftItem={nftItem.metadata}

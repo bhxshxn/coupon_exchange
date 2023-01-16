@@ -20,18 +20,22 @@ const style = {
 };
 
 const NFTCard = ({ nftItem, title, listings, isLoading }) => {
+
   const [isListed, setIsListed] = useState(false);
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
     const listing = listings.find(
-      (listing) => listing.asset.id._hex === nftItem.id._hex
+      (listing) => listing.asset.id === nftItem.id
     );
     if (Boolean(listing)) {
       setIsListed(true);
       setPrice(listing.buyoutCurrencyValuePerToken.displayValue);
     }
   }, [listings, nftItem]);
+
+  // console.log('listings', listings);
+  console.log('nftItem', nftItem);
 
   return (
     <div

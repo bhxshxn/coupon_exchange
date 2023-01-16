@@ -31,9 +31,11 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
     (async () => {
       setSelectedMarketNft(
         listings.find(
-          (marketNft) =>
+          (marketNft) => {
+            console.log('marketNft', marketNft);
             Number(marketNft?.asset.id._hex) ===
-            Number(selectedNft.metadata.id._hex)
+              Number(selectedNft.metadata.id._hex)
+          }
         )
       );
     })();
@@ -176,7 +178,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
                 onClick={() => {
                   router.push({
                     pathname: `/listItem/${Number(
-                      selectedNft.metadata.id._hex
+                      selectedNft.metadata.id
                     )}`,
                   });
                 }}

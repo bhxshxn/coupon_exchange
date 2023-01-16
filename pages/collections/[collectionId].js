@@ -41,16 +41,23 @@ const Collection = () => {
   const router = useRouter();
   // const { provider } = useWeb3();
   const { collectionId } = router.query;
+
   const [collection, setCollection] = useState({});
   const [listings, setListings] = useState([]);
-  console.log(listings);
+
+
+
   const { contract } = useContract(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
   const { data: nfts, isLoading: isReadingNfts } = useNFTs(contract);
+
+
   const marketplace = useMarketplace(
     "0x606879c4a436594Bf66113993B8B65C19675a0C7"
   );
+
+
   const { contract: marketplaceContract } = useContract(
     "0x606879c4a436594Bf66113993B8B65C19675a0C7"
   );
@@ -59,7 +66,7 @@ const Collection = () => {
     isLoading,
     error,
   } = useActiveListings(marketplaceContract);
-  console.log(isLoading);
+
 
   useEffect(() => {
     if (!marketplace) return;
@@ -67,6 +74,7 @@ const Collection = () => {
       setListings(await marketplace.getActiveListings());
     })();
   }, [marketplace]);
+
 
   const fetchCollectionData = async (sanityClient = client) => {
     const query = `*[_type == "marketItems" && contractAddress == "${collectionId}" ] {
@@ -82,14 +90,15 @@ const Collection = () => {
     }`;
 
     const collectionData = await sanityClient.fetch(query);
-
-    // console.log(collectionData, "🔥");
-
     if (collectionData.length !== 0) setCollection(collectionData[0]);
   };
+
+
   useEffect(() => {
     fetchCollectionData();
   }, [collectionId]);
+
+
   if (isLoading)
     return (
       <>
@@ -97,6 +106,8 @@ const Collection = () => {
         <LoadingFullScreen />;
       </>
     );
+
+
   return (
     <div className='overflow-hidden'>
       <Header />
@@ -158,7 +169,7 @@ const Collection = () => {
         <div className={style.midRow}>
           <div className={style.statsContainer}>
             <div className={style.collectionStat}>
-              <div className={style.statValue}>{nfts.length}</div>
+              <div className={style.statValue}>{nfts?.length}</div>
               <div className={style.statName}>items</div>
             </div>
             <div className={style.collectionStat}>

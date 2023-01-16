@@ -19,9 +19,7 @@ const listItem = () => {
   const router = useRouter();
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
-  const marketplace = useMarketplace(
-    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
-  );
+  const marketplace = useContract("0x606879c4a436594Bf66113993B8B65C19675a0C7", "marketplace")
   // const contract = useContract(process.env.MARKETPLACE_ADDRESS);
   const onSubmit = async (e) => {
     e.preventDefault();

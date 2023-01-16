@@ -33,6 +33,7 @@ const Nft = () => {
   //   return sdk.getNFTModule("0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E");
   // }, [provider]);
   // get all NFTs in the collection
+
   const { contract } = useContract(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
@@ -42,7 +43,8 @@ const Nft = () => {
     if (!nfts) return;
     (async () => {
       const selectedNftItem = nfts.find(
-        (nft) => Number(nft.metadata.id._hex) === Number(router.query.nftId)
+
+        (nft) => Number(nft.metadata.id) === Number(router.query.nftId)
       );
       setSelectedNft(selectedNftItem);
     })();
