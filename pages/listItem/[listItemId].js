@@ -13,7 +13,7 @@ const style = {
   form: ` flex flex-col justify-center items-left py-[50px]`,
 };
 
-const listItem = () => {
+const ListItem = () => {
   const connectUsingMetamask = useMetamask();
   const address = useAddress();
   const router = useRouter();
@@ -90,4 +90,4 @@ const listItem = () => {
   );
 };
 
-export default listItem;
+export default ListItem;

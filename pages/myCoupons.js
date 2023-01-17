@@ -12,7 +12,7 @@ import LoadingFullScreen from "../components/LoadingFullScreen";
 import NFTCard from "../components/NFTCard";
 import { client } from "../lib/sanityClient";
 
-const myCoupons = () => {
+const Coupons = () => {
   const router = useRouter();
   const address = useAddress();
 
@@ -105,4 +105,4 @@ const myCoupons = () => {
   );
 };
 
-export default myCoupons;
+export default Coupons;
