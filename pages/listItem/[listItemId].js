@@ -1,4 +1,4 @@
-import { useAddress, useMarketplace, useMetamask } from "@thirdweb-dev/react";
+import { useAddress, useMarketplace, useMetamask, useContract } from "@thirdweb-dev/react";
 import { NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
