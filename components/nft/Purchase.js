@@ -27,21 +27,23 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
   // console.log(selectedNft);
   const router = useRouter();
   useEffect(() => {
+    console.log('1');
     if (!listings || isListed === "false") return;
+    console.log('2');
     (async () => {
       setSelectedMarketNft(
         listings.find(
-          (marketNft) => {
-            console.log('marketNft', marketNft);
-            Number(marketNft?.asset.id._hex) ===
-              Number(selectedNft.metadata.id._hex)
-          }
+          (marketNft) =>
+            Number(marketNft?.asset.id) ===
+            Number(selectedNft.metadata.id)
+
         )
       );
     })();
   }, [selectedNft, listings, isListed]);
 
   useEffect(() => {
+    console.log('res', selectedMarketNft, selectedNft);
     if (!selectedMarketNft || !selectedNft) return;
 
     setEnableButton(true);
@@ -54,7 +56,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
-    router.reload();
+    // router.reload();
   };
   const errorPurchase = (toastHandler = toast) => {
     toastHandler.error(`Error purchasing asset`, {
@@ -64,7 +66,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
-    router.reload();
+    // router.reload();
   };
   const confirmCancelListing = (toastHandler = toast) => {
     toastHandler.success(`Listing Cancelled successful!`, {
@@ -105,11 +107,12 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
     });
     setLoading(false);
   };
-  const marketplace = useMarketplace(
-    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
+  const marketplace = useContract(
+    "0x606879c4a436594Bf66113993B8B65C19675a0C7", 'marketplace'
   );
   const { contract } = useContract(
-    "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
+    "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E",
+    'nft-collection'
   );
   const nftCollection = useNFTCollection(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
@@ -123,8 +126,10 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
   const cancelListing = async (id) => {
     try {
       setLoading(true);
-      await marketplace.direct.cancelListing(id);
+      await marketplace.contract.direct.cancelListing(id);
       confirmCancelListing();
+      router.reload();
+
     } catch (err) {
       console.error(err);
       errorCancelListing();
@@ -146,9 +151,11 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
   const buyItem = async (id) => {
     try {
       setLoading(true);
-      await marketplace.buyoutListing(id, 1);
+      console.log('id', id);
+      await marketplace.contract.direct.buyoutListing(id, 1);
       confirmPurchase();
     } catch (err) {
+      console.log('err', id);
       console.error(err);
       errorPurchase();
     }
@@ -189,7 +196,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
               </div>
               <div
                 onClick={() => {
-                  burnNft(selectedNft.metadata.id._hex);
+                  burnNft(selectedNft.metadata.id);
                 }}
                 className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}
               >
@@ -207,7 +214,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
                 onClick={() => {
                   enableButton ? buyItem(selectedMarketNft.id, 1) : null;
                 }}
-                className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}
+                className={`${style.button} ${!enableButton ? 'opacity-50' : 'opacity-100'} bg-[#2081e2] hover:bg-[#42a0ff]`}
               >
                 <IoMdWallet className={style.buttonIcon} />
                 <div className={style.buttonText}>Buy Now</div>

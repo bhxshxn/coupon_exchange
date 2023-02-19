@@ -25,7 +25,7 @@ const ListItem = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const transaction = await marketplace?.direct.createListing({
+      const transaction = await marketplace.contract.direct.createListing({
         assetContractAddress: process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS, // Contract Address of the NFT
         buyoutPricePerToken: price, // Maximum price, the auction will end immediately if a user pays this price.
         currencyContractAddress: NATIVE_TOKEN_ADDRESS, // NATIVE_TOKEN_ADDRESS is the crpyto curency that is native to the network. i.e. Rinkeby ETH.
@@ -39,8 +39,11 @@ const ListItem = () => {
       confirmMint();
       setPrice("");
       setLoading(false);
+      router.push("/myCoupons");
+
     } catch (error) {
-      console.error(error);
+      setLoading(false);
+      console.error('error', error);
     }
   };
   const confirmMint = (toastHandler = toast) =>

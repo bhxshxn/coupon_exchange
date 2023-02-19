@@ -43,6 +43,7 @@ const Create = () => {
       name,
       description,
       image: upload,
+      address: address
     });
 
     const { signature } = res.data;
