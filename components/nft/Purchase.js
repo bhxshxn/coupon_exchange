@@ -3,8 +3,9 @@ import {
   useMarketplace,
   useNFTCollection,
   useBurnNFT,
-  useContract,
+  useContract, useBuyNow
 } from "@thirdweb-dev/react";
+import { ListingType } from "@thirdweb-dev/sdk";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -76,7 +77,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
-    router.reload();
+    router.back();
   };
   const errorCancelListing = (toastHandler = toast) => {
     toastHandler.error(`Error in cancelling the listing`, {
@@ -117,6 +118,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
   const nftCollection = useNFTCollection(
     "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
   );
+  const { mutateAsync: BuyNft, isLoading: buyLoading, error: BuyError } = useBuyNow(marketplace.contract);
   const {
     mutate: burnNftNew,
     isSuccess,
@@ -128,7 +130,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       setLoading(true);
       await marketplace.contract.direct.cancelListing(id);
       confirmCancelListing();
-      router.reload();
+      router.back();
 
     } catch (err) {
       console.error(err);
@@ -152,7 +154,12 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
     try {
       setLoading(true);
       console.log('id', id);
-      await marketplace.contract.direct.buyoutListing(id, 1);
+      await BuyNft({
+        id: id,
+        type: ListingType.Direct,
+        buyForWallet: address,
+        buyAmount: 1
+      })
       confirmPurchase();
     } catch (err) {
       console.log('err', id);
