@@ -90,6 +90,7 @@ const Collection = () => {
     }`;
 
     const collectionData = await sanityClient.fetch(query);
+    console.log('collectionData', collectionData)
     if (collectionData.length !== 0) setCollection(collectionData[0]);
   };
 
@@ -160,24 +161,24 @@ const Collection = () => {
         <div className={style.midRow}>
           <div className={style.title}>{collection?.title}</div>
         </div>
-        <div className={style.midRow}>
+        {/* <div className={style.midRow}>
           <div className={style.createdBy}>
             Created by{" "}
             <span className='text-[#2081e2]'>{collection?.creator}</span>
           </div>
-        </div>
+        </div> */}
         <div className={style.midRow}>
           <div className={style.statsContainer}>
             <div className={style.collectionStat}>
-              <div className={style.statValue}>{nfts?.length}</div>
+              <div className={style.statValue}>{listings?.length}</div>
               <div className={style.statName}>items</div>
             </div>
-            <div className={style.collectionStat}>
+            {/* <div className={style.collectionStat}>
               <div className={style.statValue}>
                 {collection?.allOwners ? collection.allOwners.length : ""}
               </div>
               <div className={style.statName}>owners</div>
-            </div>
+            </div> */}
             <div className={style.collectionStat}>
               <div className={style.statValue}>
                 <img
