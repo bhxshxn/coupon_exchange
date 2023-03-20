@@ -214,7 +214,7 @@ const Collection = () => {
           <>
             {marketplacelistings.length == 0 ? (
               <div className='h-full w-screen text-white justify-center flex items-center'>
-                No NFTs Present
+                No Coupons Present
               </div>
             ) : (
               <>

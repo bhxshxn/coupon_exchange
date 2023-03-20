@@ -57,7 +57,8 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
-    // router.reload();
+    router.push("/myCoupons");
+
   };
   const errorPurchase = (toastHandler = toast) => {
     toastHandler.error(`Error purchasing asset`, {
@@ -67,7 +68,8 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
-    // router.reload();
+    router.reload();
+
   };
   const confirmCancelListing = (toastHandler = toast) => {
     toastHandler.success(`Listing Cancelled successful!`, {
@@ -77,7 +79,8 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
-    router.back();
+    router.push("/myCoupons");
+
   };
   const errorCancelListing = (toastHandler = toast) => {
     toastHandler.error(`Error in cancelling the listing`, {
@@ -88,6 +91,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
     });
     setLoading(false);
     router.reload();
+
   };
   const confirmBurnNft = (toastHandler = toast) => {
     toastHandler.success(`Nft Deleted successful!`, {
@@ -107,6 +111,7 @@ const MakeOffer = ({ isListed, selectedNft, listings }) => {
       },
     });
     setLoading(false);
+    router.reload()
   };
   const marketplace = useContract(
     "0x606879c4a436594Bf66113993B8B65C19675a0C7", 'marketplace'
