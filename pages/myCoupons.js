@@ -1,49 +1,49 @@
 import {
-  useContract,
-  useMarketplace,
-  useNFTs,
-  useAddress,
-  useOwnedNFTs,
-} from "@thirdweb-dev/react";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import LoadingFullScreen from "../components/LoadingFullScreen";
-import NFTCard from "../components/NFTCard";
-import { client } from "../lib/sanityClient";
+   useContract,
+   useMarketplace,
+   useNFTs,
+   useAddress,
+   useOwnedNFTs,
+} from '@thirdweb-dev/react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import Header from '../components/Header';
+import LoadingFullScreen from '../components/LoadingFullScreen';
+import NFTCard from '../components/NFTCard';
+import { client } from '../lib/sanityClient';
 
 const Coupons = () => {
-  const router = useRouter();
-  const address = useAddress();
+   const router = useRouter();
+   const address = useAddress();
 
-  const { collectionId } = router.query;
-  const [collection, setCollection] = useState({});
-  const [listings, setListings] = useState([]);
+   const { collectionId } = router.query;
+   const [collection, setCollection] = useState({});
+   const [listings, setListings] = useState([]);
 
-  const { contract } = useContract(
-    "0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E"
-  );
-  const { data: ownedNFTs, isLoading, error } = useOwnedNFTs(contract, address);
+   const { contract } = useContract(
+      '0x63F80dA69eF8608A49D8E4883b4114F28DC5d47E',
+   );
+   const {
+      data: ownedNFTs,
+      isLoading,
+      error,
+   } = useOwnedNFTs(contract, address);
 
-  console.log('ownedNFTs', ownedNFTs, error);
+   console.log('ownedNFTs', ownedNFTs, error);
 
+   const marketplace = useMarketplace(
+      '0x7f85776167E650e08bfb4F5002aF9125E0993FC3',
+   );
 
-  const marketplace = useMarketplace(
-    "0x606879c4a436594Bf66113993B8B65C19675a0C7"
-  );
+   useEffect(() => {
+      if (!marketplace) return;
+      (async () => {
+         setListings(await marketplace.getActiveListings());
+      })();
+   }, [marketplace]);
 
-
-  useEffect(() => {
-    if (!marketplace) return;
-    (async () => {
-      setListings(await marketplace.getActiveListings());
-    })();
-  }, [marketplace]);
-
-
-
-  const fetchCollectionData = async (sanityClient = client) => {
-    const query = `*[_type == "marketItems" && contractAddress == "${collectionId}" ] {
+   const fetchCollectionData = async (sanityClient = client) => {
+      const query = `*[_type == "marketItems" && contractAddress == "${collectionId}" ] {
       "imageUrl": profileImage.asset->url,
       "bannerImageUrl": bannerImage.asset->url,
       volumeTraded,
@@ -55,54 +55,54 @@ const Coupons = () => {
       description
     }`;
 
-    const collectionData = await sanityClient.fetch(query);
+      const collectionData = await sanityClient.fetch(query);
 
-    // console.log(collectionData, "🔥");
+      // console.log(collectionData, "🔥");
 
-    if (collectionData.length !== 0) setCollection(collectionData[0]);
-  };
-  useEffect(() => {
-    fetchCollectionData();
-  }, [collectionId]);
-  if (isLoading)
-    return (
-      <>
-        <Header />
-        <LoadingFullScreen />;
-      </>
-    );
-  return (
-    <div className='overflow-hidden'>
-      <Header />
-      <div className='flex flex-wrap '>
-        {ownedNFTs?.length == 0 ? (
-          <div className='h-screen w-screen text-white justify-center flex items-center'>
-            No NFTs Present
-          </div>
-        ) : (
-          <>
-            {ownedNFTs?.map((nftItem) => (
-              <NFTCard
-                key={nftItem.metadata.id / 1e18}
-                nftItem={nftItem.metadata}
-                title={collection?.title}
-                listings={listings}
-                isLoading={isLoading}
-              />
+      if (collectionData.length !== 0) setCollection(collectionData[0]);
+   };
+   useEffect(() => {
+      fetchCollectionData();
+   }, [collectionId]);
+   if (isLoading)
+      return (
+         <>
+            <Header />
+            <LoadingFullScreen />;
+         </>
+      );
+   return (
+      <div className='overflow-hidden'>
+         <Header />
+         <div className='flex flex-wrap '>
+            {ownedNFTs?.length == 0 ? (
+               <div className='h-screen w-screen text-white justify-center flex items-center'>
+                  No Coupons Present
+               </div>
+            ) : (
+               <>
+                  {ownedNFTs?.map(nftItem => (
+                     <NFTCard
+                        key={nftItem.metadata.id / 1e18}
+                        nftItem={nftItem.metadata}
+                        title={collection?.title}
+                        listings={listings}
+                        isLoading={isLoading}
+                     />
 
-              // <NFTCard
-              //   key={nftItem.id}
-              //   nftItem={nftItem.asset}
-              //   title={collection?.title}
-              //   listings={listings}
-              //   isLoading={isReadingNfts}
-              // />
-            ))}
-          </>
-        )}
+                     // <NFTCard
+                     //   key={nftItem.id}
+                     //   nftItem={nftItem.asset}
+                     //   title={collection?.title}
+                     //   listings={listings}
+                     //   isLoading={isReadingNfts}
+                     // />
+                  ))}
+               </>
+            )}
+         </div>
       </div>
-    </div>
-  );
+   );
 };
 
 export default Coupons;
